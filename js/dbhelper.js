@@ -173,10 +173,10 @@ class DBHelper {
   } 
 
 
-  static fetchRestaurantReviewsById(id, callback) {
-    // Fetch all reviews for the specific restaurant
+  static fetchRestaurantReviewsById(restaurantID, callback) {
+    // Fetch reviews for the specific restaurant
     if (navigator.onLine) {
-      const fetchDatabaseURL = DBHelper.databaseReviewsURL + "/?restaurant_id=" + id;
+      const fetchDatabaseURL = DBHelper.databaseReviewsURL + "/?restaurant_id=" + restaurantID;
       const fetchProtocol = {method: "GET"};
       fetch(fetchDatabaseURL, fetchProtocol).then(response => 
       {
@@ -188,9 +188,7 @@ class DBHelper {
         if (requestCloneOk && requestCloneRedirect) {
           throw "Reviews not available for this restaurant";
         }
-        response
-          .json()
-          .then(data => {
+        response.json().then(data => {
             callback(null, data);
           })
       }).catch(error => 
@@ -209,7 +207,7 @@ class DBHelper {
     .then(event => {
       var data = [];
       for (var i = 0; i < event.length; i++) {
-        if (event[i].restaurant_id == id) {
+        if (event[i].restaurant_id == restaurantID) {
           data.push(event[i]);
         }
       };
