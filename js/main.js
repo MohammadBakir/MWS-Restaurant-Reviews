@@ -173,7 +173,7 @@ createRestaurantHTML = (restaurant) => {
   address.innerHTML = restaurant.address;
   li.append(address);
 
-  const more = document.createElement('button');
+  var more = document.createElement('button');
   more.innerHTML = 'View Details';
   more.className = "detailsButton"
   more.onclick = function() {
@@ -182,23 +182,23 @@ createRestaurantHTML = (restaurant) => {
   }
   li.append(more)
 
-  const isFavorite = (restaurant["is_favorite"] && restaurant["is_favorite"].toString() === "true") ? true : false;
-  const favoriteButton = document.createElement("button");
+  var isFavorite = (restaurant["is_favorite"].toString() === "true") ? true : false;
+  var favoriteButton = document.createElement("button"); 
   favoriteButton.style.background = isFavorite
-  //icons were borrowed from Project Coach Dough Brown.
+  //icons were borrowed from Project Coach Doug Brown.
     ? `url("/icons/002-like.svg") no-repeat`
     : `url("icons/001-like.svg") no-repeat`;
   favoriteButton.innerHTML = isFavorite
     ? " Favorite"
     : " Non Favorite";
   favoriteButton.id = "fav-icon-button" + restaurant.id;
-  favoriteButton.onclick = event => handleFavoriteClick(restaurant.id, !isFavorite);
+  favoriteButton.onclick = event => favoriteClickHandle(restaurant.id, !isFavorite);
 
   li.append(favoriteButton);
   return li
 }
 
-function handleFavoriteClick(id, newState) {
+function favoriteClickHandle(id, newState) {
   /// Update properties of the restaurant data object
   const favorite = document.getElementById("fav-icon-button" + id);
   const restaurant = self
@@ -217,7 +217,6 @@ function handleFavoriteClick(id, newState) {
     return;
   restaurant["is_favorite"] = newState;
   DBHelper.updateDatabaseFavStatus(id, newState)
-  console.log("Fav Button Clicked");
   //TODO, figure out how to toggle the favorite status, currently only toggles once. 
 }; 
  
@@ -236,6 +235,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
 } 
 
 /*
+Saving this chunk of code for potential future use.
 function populateReviewInfoDatabase(restaurantID,restaurant) {
    fetch(`${DBHelper.databaseReviewsURL+"/?restaurant_id="+restaurantID}`)
    .then(response => response.json())
