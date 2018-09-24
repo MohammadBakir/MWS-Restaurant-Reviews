@@ -176,27 +176,27 @@ class DBHelper {
   static fetchRestaurantReviewsById(id, callback) {
     // Fetch all reviews for the specific restaurant
     if (navigator.onLine) {
-    const fetchDatabaseURL = DBHelper.databaseReviewsURL + "/?restaurant_id=" + id;
-    const fetchProtocol = {method: "GET"};
-    fetch(fetchDatabaseURL, fetchProtocol).then(response => 
-    {
-    /*A request is a stream and can only be consumed once. 
-    Since we are consuming this once by cache and once by the browser for fetch, 
-    we need to clone the response.*/ 
-    const requestCloneOk = !response.clone().ok;
-    const requestCloneRedirect = !response.clone().redirected;
-      if (requestCloneOk && requestCloneRedirect) {
-        throw "No reviews available for this restaurant";
-      }
-      response
-        .json()
-        .then(data => {
-          callback(null, data);
-        })
-    }).catch(error => 
-          console.log(`Failed to return Reviews from the database`, callback(error, null))
-      );
-  } else {
+      const fetchDatabaseURL = DBHelper.databaseReviewsURL + "/?restaurant_id=" + id;
+      const fetchProtocol = {method: "GET"};
+      fetch(fetchDatabaseURL, fetchProtocol).then(response => 
+      {
+      /*A request is a stream and can only be consumed once. 
+      Since we are consuming this once by cache and once by the browser for fetch, 
+      we need to clone the response.*/ 
+      const requestCloneOk = !response.clone().ok;
+      const requestCloneRedirect = !response.clone().redirected;
+        if (requestCloneOk && requestCloneRedirect) {
+          throw "Reviews not available for this restaurant";
+        }
+        response
+          .json()
+          .then(data => {
+            callback(null, data);
+          })
+      }).catch(error => 
+            console.log(`Failed to return Reviews from the database`, callback(error, null))
+        );
+    } else {
     /*
     for offline cases, go into the database and fetch all reviews that are associated with the restaurant
     page accessed and display them on the page. 
@@ -227,8 +227,8 @@ class DBHelper {
        'DBHelper.updateIDBRestaurantData'.
   **/
   static updateDatabaseFavStatus(id, newState) {
-    //const fav = document.getElementById("fav-icon-button" + id);
-    //fav.onclick = null;
+    const fav = document.getElementById("fav-icon-button" + id);
+    fav.onclick = null;
     const favPUTEndpoint = `${DBHelper.DATABASE_URL}/${id}/?is_favorite=${newState}`;
     const fetchProtocol = {method: "PUT"};
     fetch(favPUTEndpoint, fetchProtocol); 
