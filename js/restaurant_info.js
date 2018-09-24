@@ -125,7 +125,10 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = (error, reviews) => {
-  self.restaurant.reviews = reviews;
+  //Reverse reviews to show latest reviews first. 
+  var reversedReviews = reviews.reverse();
+
+  self.restaurant.reviews = reversedReviews;
 
   if (error) {
     console.log("Error retrieving restaurant review: ", error);
@@ -210,6 +213,3 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
-
-
-
