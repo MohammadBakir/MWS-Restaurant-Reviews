@@ -225,8 +225,8 @@ class DBHelper {
        'DBHelper.updateIDBRestaurantData'.
   **/
   static updateDatabaseFavStatus(id, newState) {
-    const fav = document.getElementById("fav-icon-button" + id);
-    fav.onclick = null;
+    //const fav = document.getElementById("fav-icon-button" + id);
+    //fav.onclick = null;
     const favPUTEndpoint = `${DBHelper.DATABASE_URL}/${id}/?is_favorite=${newState}`;
     const fetchProtocol = {method: "PUT"};
     fetch(favPUTEndpoint, fetchProtocol); 
