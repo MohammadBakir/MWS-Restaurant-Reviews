@@ -5,7 +5,7 @@
 This code covers Stage 3 of the Restaurant Reviews web application for the Mobile Web Specialist course from Udacity. It has the following features:
 
 * A fully responsive layout
-* Responsive images, both for sizing and art direction
+* Responsive images
 * A restaurant listings page
 * A restaurant info page
 * Accessibility updates
