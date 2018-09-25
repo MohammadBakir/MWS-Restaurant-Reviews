@@ -133,15 +133,16 @@ resetRestaurants = (restaurants) => {
 fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
-    ul.append(createRestaurantHTML(restaurant));
+    ul.append(createRestaurantHTML(restaurant,restaurant["is_favorite"].toString()));
   });
   addMarkersToMap();
 }
 
+
 /**
  * Create restaurant HTML.
  */
-createRestaurantHTML = (restaurant) => {
+createRestaurantHTML = (restaurant, fav_status) => {
   const li = document.createElement('li');
 
   const image = document.createElement('img');
@@ -182,7 +183,7 @@ createRestaurantHTML = (restaurant) => {
   }
   li.append(more)
 
-  var isFavorite = (restaurant["is_favorite"].toString() === "true") ? true : false;
+  var isFavorite = (fav_status === "true") ? true : false;
   var favoriteButton = document.createElement("button"); 
   favoriteButton.style.background = isFavorite
   //icons were borrowed from Project Coach Doug Brown.
@@ -197,7 +198,7 @@ createRestaurantHTML = (restaurant) => {
   li.append(favoriteButton);
   return li
 }
-
+  
 function favClickHandle(id, newState) {
   /// Update properties of the restaurant data object
   const favorite = document.getElementById("fav-icon-button" + id);
@@ -209,13 +210,12 @@ function favClickHandle(id, newState) {
   } else if (!newState) {
     favorite.style.background = `url("/icons/001-like.svg") no-repeat`;
     favorite.innerHTML = "Non Favorite";
-
   }
   if (!restaurant)
     return;
   restaurant["is_favorite"] = newState;
+  favorite.onclick = event => favClickHandle(restaurant.id, !newState);
   DBHelper.updateDatabaseFavStatus(id, newState)
-  //TODO, figure out how to toggle the favorite status, currently only toggles once. 
 }; 
  
 /**
@@ -231,28 +231,3 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     }
   });
 } 
-
-/*
-Saving this chunk of code for potential future use.
-function populateReviewInfoDatabase(restaurantID,restaurant) {
-   fetch(`${DBHelper.databaseReviewsURL+"/?restaurant_id="+restaurantID}`)
-   .then(response => response.json())
-   .then(data => {
-        idb.open('Restaurants', 1).then(function(db){
-        var tx = db.transaction('online-restaurant-reviews', 'readwrite');
-        var reviewsStore = tx.objectStore('online-restaurant-reviews');
-        for (i = 0; i < data.length; i++) {
-              reviewsStore.put(data[i]);
-            }
-            console.log("Successfully added restaurant reviews to IDB database.")
-        }).catch(error => {
-          console.log("Failed to add restaurant reviews to database: ", error);
-        })
-    });
-   const url = DBHelper.urlForRestaurant(restaurant);
-   return window.location = url;
-   /*setTimeout(function(url){ 
-      window.location.href = url;}
-      ,10000);
-}*/
-
