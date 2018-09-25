@@ -102,7 +102,7 @@ self.addEventListener('activate', function(event) {
 });
 
 function createDatabase(data){
-  console.log('Creating Database')
+  console.log('Creating Databases')
   idb.open('Restaurants', 1, function(upgradeDb) {
     switch (upgradeDb.oldVersion) {
       case 0:
@@ -113,6 +113,9 @@ function createDatabase(data){
           keyPath: 'id'
         })
         upgradeDb.createObjectStore('offline-restaurant-reviews', {
+          keyPath: 'id', autoIncrement:true
+        })
+          upgradeDb.createObjectStore('offline-restaurant-favs-status', {
           keyPath: 'id', autoIncrement:true
         })
     }
