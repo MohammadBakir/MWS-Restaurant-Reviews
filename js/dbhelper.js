@@ -229,14 +229,23 @@ class DBHelper {
     //fav.onclick = null;
     const favPUTEndpoint = `${DBHelper.DATABASE_URL}/${id}/?is_favorite=${newState}`;
     const fetchProtocol = {method: "PUT"};
-    fetch(favPUTEndpoint, fetchProtocol); 
-    DBHelper.updateIDBRestaurantData(id,newState);
+    if (navigator.onLine) {
+      fetch(favPUTEndpoint, fetchProtocol); 
+      DBHelper.updateIDBRestaurantData(id,newState);
+    } else {
+      console.log("Can't Add Favorites Status to Database,currenlty Offline, Adding to offline-restaurant-object store");
+      const body = {
+        id: id,
+        is_favorite: newState
+      }
+      DBHelper.IDBOfflineRestaurantReviewsFavs(body);
+    }
   }
 
   static updateIDBRestaurantData(restaurantId, newState) {
   const dbPromise = idb.open('Restaurants', 1);
   dbPromise.then(db => {
-    var tx = db.transaction(['restaurant-info'], "readwrite");
+    var tx = db.transaction('restaurant-info', "readwrite");
     var objectStore = tx.objectStore('restaurant-info');
     var objectStoreTitleRequest = objectStore.get(restaurantId)
     .then(event => {
@@ -245,8 +254,40 @@ class DBHelper {
       data.is_favorite = newState;
       objectStore.put(data);
       return tx.complete;
+      });
     });
-  });
+  }
+
+  static IDBOfflineRestaurantReviewsFavs(body) {
+  const dbPromise = idb.open('Restaurants', 1);
+  dbPromise.then(db => {
+    var tx = db.transaction('offline-restaurant-favs-status', "readwrite");
+    var objectStore = tx.objectStore('offline-restaurant-favs-status');
+    objectStore.add(body);
+    console.log("Successfully added favorite status to the offline IDB.");
+    return tx.complete;
+    }).catch(error => {
+         console.log("Could Not Add Review to online-restaurant-info Object Store", error);
+    });
+  }
+
+  static updateDatabaseForFavStatusWhenOnline(){
+    //Open indexeddb Database 'Restaurants'
+    const dbPromise = idb.open('Restaurants', 1);
+    dbPromise.then(db => {
+      var tx = db.transaction('offline-restaurant-favs-status', "readwrite");
+      var objectStore = tx.objectStore('offline-restaurant-favs-status');
+      //Read stored offline review.
+      var response = objectStore.getAll();
+      //Clear objects store to prevent doubling of review additions under multiple offline cases!
+      objectStore.clear();
+      return response;
+    }).then(response => {
+      for (var i = 0; i < response.length; i++) {
+            DBHelper.updateDatabaseFavStatus(response[i].id,response[i].is_favorite);
+          }
+      console.log("Successfully updated Restaurants favorite status");
+    });
   }
 
   /**
@@ -434,25 +475,3 @@ function getLocalEventData(response) {
       return restaurantStore.getAll();
     });
 }
-
-   /**
-    Saving this chunk of code for potential future use.
-    **
-    var objectStoreLengthCount = objectStore.getAll()
-    .then(event => {
-      console.log(event.length);
-      return event.length;
-    }).then( length => {
-        postBody = JSON.parse(postBody);
-        var item = {
-          id: length+1,
-          postBody
-        };
-        objectStore.add(postBody);
-        console.log("Successfully added review to the cache.");
-        return tx.complete;
-      }).catch(error => {
-         console.log("Could Not Add Review to restaurant-reviews Object Store", error);
-      });
-    });
-    **/
