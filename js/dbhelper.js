@@ -9,13 +9,15 @@ class DBHelper {
    * Database URL.
    */
   static get DATABASE_URL() {
-    const port = 1337 // Server port
-  return `http://localhost:${port}/restaurants`;
+  //const port = 1337; // Server port
+  //return `http://localhost:${port}/restaurants`;
+    return `http://restaurantreviewsserver.herokuapp.com/restaurants`
   }
 
   static get databaseReviewsURL() {
-    const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/reviews`;
+    //const port = 1337; // Change this to your server port
+    //return `http://localhost:${port}/reviews`;
+    return `http://restaurantreviewsserver.herokuapp.com/reviews`
   }
 
   /**
