@@ -133,11 +133,10 @@ resetRestaurants = (restaurants) => {
 fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
   restaurants.forEach(restaurant => {
-    ul.append(createRestaurantHTML(restaurant,restaurant["is_favorite"].toString()));
+    ul.append(createRestaurantHTML(restaurant));
   });
   addMarkersToMap();
-}
-
+  }
 
 /**
  * Create restaurant HTML.
