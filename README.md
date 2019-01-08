@@ -19,6 +19,10 @@ Icons credit to Flaticons
 
 ## How to view
 
+This project is hosted on [Netlify](https://restaurantreviewappmb.netlify.com/).
+
+## Or to view it locally
+
 This project depends on a separate project provided by Udacity to create an API end-point. This project is available on [git ](https://github.com/udacity/mws-restaurant-stage-3). Please follow the instructions there.
 
 Once you the API server is started, do the following:
